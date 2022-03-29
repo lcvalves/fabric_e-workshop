@@ -1,7 +1,16 @@
-# fabric_e-workshop
-Codebase for Hands-On Hyperledger Fabric e-Workshop
+# Hands On Hyperledeger Fabric e-Workshop
 
-# Ambiente de desenvolvimento + Software
+Este e-Workshop tem como objetivo construir um Chaincode Fabric em Go, simples e abstrato, capaz de suportar a rastreabilidade de **Lotes** e **Atividades** sobre esses mesmos lotes no protocolo do Hyperledger Fabric.
+
+Teremos a possibilidade de criar Lotes provenientes de outros Lotes através das Atividades, registos esses que serão rastráveis no ledger do Fabric. 
+
+![Diagrama de rastreabilidade](https://github.com/lcvalves/fabric_e-workshop/blob/master/diagrams/traceability-diagram.png?raw=true)
+
+Para suportar estas funcionalidades, iremos desenvolver 1 único smart contract capaz de representar os **Lotes** e **Atividades**, com restrições a nível de validação e verificação dos dados definidos, nomeadamente as quantidades dos lotes.
+
+![Modelo Structs Go](https://github.com/lcvalves/fabric_e-workshop/blob/master/diagrams/go-struct-model.png?raw=true)
+
+# Ambiente de desenvolvimento & Software
 O software a instalar deve ser instalado no SO do ambiente de desenvolvimento:
 
  - [ ] Sistema operativo baseado em **Unix**:
@@ -15,14 +24,10 @@ O software a instalar deve ser instalado no SO do ambiente de desenvolvimento:
 	 - [ ] [Go](https://marketplace.visualstudio.com/items?itemName=golang.go)
  - [ ] Aceder ao **[ambiente Postman](https://app.getpostman.com/join-team?invite_code=4223fbd84753d939313742a6aeb2f9b3&target_code=2f99ae3d099475ee13339fd7a4448f47)** do e-Workshop
 
-## Definição do Smart Contract
 
-Modelo classes Go
-Diagrama rastreabilidade
+## Desenvolvimento do Chaincode
 
-## IBPVSCE
-
-Desenvolvimento na IBM Blockchain Platform VS Code Extension
+...
 
 ## Deploy on Fablo
 
