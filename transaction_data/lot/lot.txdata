@@ -1,0 +1,78 @@
+[
+    {
+        "transactionName": "LotExists",
+        "transactionLabel": "A test LotExists transaction",
+        "arguments": [
+            "lot08"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "AuditInputLots",
+        "transactionLabel": "A test AuditInputLots transaction",
+        "arguments": [
+            {
+                "lot06": 100,
+                "lot07": 100
+            }
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "CreateLot",
+        "transactionLabel": "A test CreateLot transaction",
+        "arguments": [
+            "lot08",
+            "test-type",
+            "pa08",
+            "200",
+            "0",
+            "punit03",
+            "lot08-iid01"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "ReadLot",
+        "transactionLabel": "A test ReadLot transaction",
+        "arguments": [
+            "lot08"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "UpdateLotAmount",
+        "transactionLabel": "A test UpdateLotAmount transaction",
+        "arguments": [
+            "lot08",
+            500
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "UpdateLotProdActivity",
+        "transactionLabel": "A test UpdateLotProdActivity transaction",
+        "arguments": [
+            "lot08",
+            "pa08"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "TransferLot",
+        "transactionLabel": "A test TransferLot transaction",
+        "arguments": [
+            "lot08",
+            "punit02"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "DeleteLot",
+        "transactionLabel": "A test DeleteLot transaction",
+        "arguments": [
+            "lot08"
+        ],
+        "transientData": {}
+    }
+]

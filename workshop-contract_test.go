@@ -5,18 +5,12 @@
 package main
 
 import (
-	"encoding/json"
-	"errors"
-	"fmt"
-	"testing"
-
-	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	"github.com/hyperledger/fabric-chaincode-go/shim"
-	"github.com/stretchr/testify/assert"
+	"github.com/hyperledger/fabric-contract-api-go/contractapi"
 	"github.com/stretchr/testify/mock"
 )
 
-const getStateError = "world state get error"
+//const getStateError = "world state get error"
 
 type MockStub struct {
 	shim.ChaincodeStubInterface
@@ -51,6 +45,8 @@ func (mc *MockContext) GetStub() shim.ChaincodeStubInterface {
 
 	return args.Get(0).(*MockStub)
 }
+
+/*
 
 func configureStub() (*MockContext, *MockStub) {
 	var nilBytes []byte
@@ -171,3 +167,4 @@ func TestDeleteWorkshop(t *testing.T) {
 	assert.Nil(t, err, "should not return error when Workshop exists in world state when deleting")
 	stub.AssertCalled(t, "DelState", "workshopkey")
 }
+*/

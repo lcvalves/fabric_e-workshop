@@ -1,0 +1,40 @@
+[
+    {
+        "transactionName": "ActivityExists",
+        "transactionLabel": "A test ActivityExists transaction",
+        "arguments": [
+            "act01"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "CreateActivity",
+        "transactionLabel": "A test CreateActivity transaction",
+        "arguments": [
+            "act01",
+            "test-type",
+            "pa08",
+            "200",
+            "0",
+            "punit03",
+            "act08-iid01"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "ReadActivity",
+        "transactionLabel": "A test ReadActivity transaction",
+        "arguments": [
+            "act08"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "DeleteActivity",
+        "transactionLabel": "A test DeleteActivity transaction",
+        "arguments": [
+            "act08"
+        ],
+        "transientData": {}
+    }
+]

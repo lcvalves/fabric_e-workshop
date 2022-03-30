@@ -51,7 +51,7 @@ Inicializamos o Microfab com o seguinte comando:
 
 `docker run -p 8080:8080 ibmcom/ibp-microfab`
 
-> ⚠️ É esperada uma resposta no terminal de execução do tipo `Microfab started in ...ms` a confirmar que o Mircofab está a correr corretamente.
+> ✔️ É esperada uma resposta no terminal de execução do tipo `Microfab started in ...ms` a confirmar que o Mircofab está a correr corretamente.
 
 De seguida, vamos adicionar este Microfab à extensão ***IBM Blockchain Platform*** do VS Code para podermos gerar um sample Smart Contract.
 
@@ -66,10 +66,10 @@ O processo para adicionar o Microfab na extensão é o seguinte:
 4. Inserir nome do ambiente (ex: **`microfab`**);
    
 5. Clicar no ambiente acabado de criar;
-   > ⚠️ É esperada a resposta `'Connected to environment: xxxxxx'`;
+   > ✔️ É esperada a resposta `'Connected to environment: xxxxxx'`;
    
 6. Na janela *Fabric Gateways*, clicar em *Org1 Gateway* e em *Org1 Admin* para interagirmos como administrador da Org1.
-   > ⚠️ É esperada a resposta `'Connected via gateway: xxxxxx`';
+   > ✔️ É esperada a resposta `'Connected via gateway: xxxxxx`';
 
 Após estes passos, estaremos prontos a utilizar o Microfab como runtime de desenvolvimento dentro da extensão ***IBM Blockchain Platform***.
 
@@ -181,6 +181,57 @@ Após estes passos, tendo em conta os resultados esperados, testamos as nossas t
 
 ### Traceability Smart Contract
 
+
+
+#### `workshop.go`
+
+```go
+// Lot armazena informação relativa aos lotes da cadeia de valor
+type Lot struct {
+	DocType string  `json:"docType"` // docType ("lot") tem de ser usado para se distinguir de outros documentos da state database
+	ID      string  `json:"ID"`
+	Product string  `json:"product"`
+	Amount  float32 `json:"amount"`
+	Unit    string  `json:"unit"`
+	Owner   string  `json:"owner"`
+}
+
+// Activity armazena informação sobre as atividades da cadeia de valor
+type Activity struct {
+	DocType   string             `json:"docType"` // docType ("act") tem de ser usado para se distinguir de outros documentos da state database
+	ID        string             `json:"ID"`
+	InputLots map[string]float32 `json:"inputLots,omitempty" metadata:",optional"` // inputLots é opcional porque podemos ter atividades que apenas registam lotes que vêm de fora da cadeira de valor
+	OutputLot Lot                `json:"outputLot"`
+	Date      string             `json:"date"`
+	Issuer    string             `json:"issuer"`
+}
+```
+
+#### `workshop-contract.go`
+
+##### CreateLot
+
+```go
+// Lot armazena informação relativa aos lotes da cadeia de valor
+type Lot struct {
+	DocType string  `json:"docType"` // docType ("lot") tem de ser usado para se distinguir de outros documentos da state database
+	ID      string  `json:"ID"`
+	Product string  `json:"product"`
+	Amount  float32 `json:"amount"`
+	Unit    string  `json:"unit"`
+	Owner   string  `json:"owner"`
+}
+
+// Activity armazena informação sobre as atividades da cadeia de valor
+type Activity struct {
+	DocType   string             `json:"docType"` // docType ("act") tem de ser usado para se distinguir de outros documentos da state database
+	ID        string             `json:"ID"`
+	InputLots map[string]float32 `json:"inputLots,omitempty" metadata:",optional"` // inputLots é opcional porque podemos ter atividades que apenas registam lotes que vêm de fora da cadeira de valor
+	OutputLot Lot                `json:"outputLot"`
+	Date      string             `json:"date"`
+	Issuer    string             `json:"issuer"`
+}
+```
 
 
 ## Deploy on Fablo
