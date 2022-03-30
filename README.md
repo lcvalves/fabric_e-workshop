@@ -236,11 +236,10 @@ type Activity struct {
 
 ## Deploy on Fablo
 
-...
+```bash
+curl -Lf https://github.com/hyperledger-labs/fablo/releases/download/1.0.0/fablo.sh -o ./fablo && chmod +x ./fablo
+```
 
-## Test via Postman
-
-...
 
 ## Test Explorer
 

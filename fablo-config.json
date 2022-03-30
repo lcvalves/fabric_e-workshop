@@ -51,8 +51,8 @@
   ],
   "chaincodes": [
     {
-      "name": "fabric_e-workshop",
-      "version": "1",
+      "name": "workshop",
+      "version": "3",
       "lang": "golang",
       "channel": "my-channel1",
       "directory": "."
