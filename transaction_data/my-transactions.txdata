@@ -1,0 +1,44 @@
+[
+    {
+        "transactionName": "WorkshopExists",
+        "transactionLabel": "A test WorkshopExists transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "CreateWorkshop",
+        "transactionLabel": "A test CreateWorkshop transaction",
+        "arguments": [
+            "001",
+            "some value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "ReadWorkshop",
+        "transactionLabel": "A test ReadWorkshop transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "UpdateWorkshop",
+        "transactionLabel": "A test UpdateWorkshop transaction",
+        "arguments": [
+            "001",
+            "some other value"
+        ],
+        "transientData": {}
+    },
+    {
+        "transactionName": "DeleteWorkshop",
+        "transactionLabel": "A test DeleteWorkshop transaction",
+        "arguments": [
+            "001"
+        ],
+        "transientData": {}
+    }
+]
