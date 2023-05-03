@@ -1,0 +1,4759 @@
+{
+	"info": {
+		"_postman_id": "0e3b2069-0c84-4ebc-97d1-40433f652a36",
+		"name": "fablo-rest_test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "14379153",
+		"_collection_link": "https://stvgodigital-pps1.postman.co/workspace/STVgoDigital~46032ea4-ff28-4524-a70e-dc38c39c5102/collection/14379153-0e3b2069-0c84-4ebc-97d1-40433f652a36?action=share&creator=14379153&source=collection_link"
+	},
+	"item": [
+		{
+			"name": "INOVAFIL",
+			"item": [
+				{
+					"name": "Enroll INOVAFIL Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var req = JSON.parse(pm.request.toJSON().body.raw)\r",
+									"\tres = pm.response.json();\r",
+									"\r",
+									"pm.environment.set('inovafil-bearer', res.token);\r",
+									"\r",
+									"var identity = req.id\r",
+									"\tsecret = req.secret\r",
+									"\r",
+									"// Tests if has admin credentials\r",
+									"pm.test(\"Has admin authorized credentials\", function () {\r",
+									"\tpm.expect(pm.response.text(), \"Missing credentials\").to.not.include(`is not set`);\r",
+									"\tpm.expect(pm.response.text(), \"Authentication failure\").to.not.include(`Authentication failure`);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"admin\",\r\n    \"secret\": \"adminpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{inovafil-port}}/user/enroll",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{inovafil-port}}",
+							"path": [
+								"user",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register INOVAFIL Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var req = JSON.parse(pm.request.toJSON().body.raw)\r",
+									"\tres = pm.response.json().message\r",
+									"\r",
+									"var identity = req.id\r",
+									"\tsecret = req.secret\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"\t// Tests if issuer is enrolled\r",
+									"\tpm.test(\"User is enrolled \", function () {\r",
+									"    \tpm.expect(pm.response.text(), \"Missing authentication\").to.not.include(`User with provided token is not enrolled`);\r",
+									"\t});\r",
+									"} else {\r",
+									"\t// Tests if issuer is enrolled\r",
+									"\tpm.test(\"User is enrolled \", function () {\r",
+									"\t\tpm.expect(pm.response.text(), \"Missing authentication\").to.not.include(`User with provided token is not \tenrolled`);\r",
+									"\t});\r",
+									"\r",
+									"\t// Tests if issuer is admin\r",
+									"\tpm.test(\"Has permission to register\", function () {\r",
+									"\t\tpm.expect(pm.response.text(), \"Missing admin authorization\").to.not.include(`Missing authorization header`);\r",
+									"\t});\r",
+									"\r",
+									"\t// Tests if new client ID already exists\r",
+									"\tpm.test(\"Valid identity name\", function () {\r",
+									"\t\tpm.expect(pm.response.text(), \"Invalid identity name\").to.not.include(`Identity '${identity}' is already registered`);\r",
+									"\t\tpm.expect(pm.response.text(), \"Invalid identity name\").to.not.include(`Missing required argument`);\r",
+									"\t});\r",
+									"\r",
+									"\t// Tests if new identity is added to CA\r",
+									"\tpm.test(\"Added identity to CA\", function () {\r",
+									"\t\tpm.expect(pm.response.to.have.status(201))\r",
+									"\t\tpm.expect(pm.response.text(), \"Added identity to CA\").to.include(`ok`);\r",
+									"\t});\r",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{inovafil-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"operator\",\r\n    \"secret\": \"operatorpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{inovafil-port}}/user/register",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{inovafil-port}}",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll INOVAFIL Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var req = JSON.parse(pm.request.toJSON().body.raw)\r",
+									"\tres = pm.response.json();\r",
+									"\r",
+									"pm.environment.set('inovafil-bearer', res.token);\r",
+									"\r",
+									"var identity = req.id\r",
+									"\tsecret = req.secret\r",
+									"\r",
+									"// Tests if has admin issued credentials\r",
+									"pm.test(\"Has admin issued credentials\", function () {\r",
+									"\tpm.expect(pm.response.text(), \"Missing credentials\").to.not.include(`is not set`);\r",
+									"\tpm.expect(pm.response.text(), \"Authentication failure\").to.not.include(`Authentication failure`);\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"operator\",\r\n    \"secret\": \"operatorpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{inovafil-port}}/user/enroll",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{inovafil-port}}",
+							"path": [
+								"user",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Cotton",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Registration variables\r",
+									"var batchTypes = [\r",
+									"\t\"CONVENTIONAL_COTTON\",\r",
+									"\t\"ORGANIC_COTTON\",\r",
+									"\t\"RECYCLED_COTTON\",\r",
+									"\t\"PES\",\r",
+									"\t\"PES_RPET\",\r",
+									"\t\"POLYPROPYLENE\",\r",
+									"\t\"POLYAMIDE_6\",\r",
+									"\t\"POLYAMIDE_66\",\r",
+									"\t\"PAN\",\r",
+									"\t\"VISCOSE\",\r",
+									"\t\"FLAX\",\r",
+									"\t\"JUTE\",\r",
+									"\t\"KENAF\",\r",
+									"\t\"BAMBOO\",\r",
+									"\t\"SILK\",\r",
+									"\t\"WOOL\",\r",
+									"\t\"ELASTANE\",\r",
+									"\t\"YARN\",\r",
+									"\t\"RAW_FABRIC\",\r",
+									"\t\"DYED_FABRIC\",\r",
+									"\t\"RAW_KNITTED_FABRIC\",\r",
+									"\t\"DYED_KNITTED_FABRIC\",\r",
+									"\t\"GARMENT\"\r",
+									"];\r",
+									"compositionSum = 0;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var registrationID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  batchID = req.args[2];\r",
+									"  batchType = req.args[3];\r",
+									"  batchInternalID = req.args[4];\r",
+									"  supplierID = req.args[5];\r",
+									"  quantity = req.args[6];\r",
+									"  finalScore = req.args[7];\r",
+									"  batchComposition = req.args[8];\r",
+									"  batchCompositionMap = new Map(Object.entries(JSON.parse(batchComposition)));\r",
+									"\r",
+									"  // Tests for valid registration ID\r",
+									"  pm.test(\"Valid registration ID\", function () {\r",
+									"    pm.expect(registrationID, \"Empty registration ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [rg-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `registration [${registrationID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Got timestamp\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid batch type\r",
+									"  pm.test(\"Batch type is valid (FIBER, YARN, MESH, ...)\", function () {\r",
+									"    pm.expect(batchType, \"Empty batch type ID\").to.not.be.empty;\r",
+									"    pm.expect(batchTypes, \"Inserted batch type not defined\").to.deep.include(\r",
+									"      batchType\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch type\").to.not.include(\r",
+									"      `could not validate batch type`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid batch data\r",
+									"  pm.test(\"Batch data is valid\", function () {\r",
+									"    // Batch ID\r",
+									"    pm.expect(batchID, \"Empty batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"      `could not read batch from world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"      `batch [${batchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(batchInternalID, \"Empty batch internal ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch internal ID\").to.not.include(\r",
+									"      `batch internal ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Supplier ID\r",
+									"    pm.expect(supplierID, \"Empty supplier ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid supplier ID\").to.not.include(\r",
+									"      `supplier ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Batch composition\r",
+									"    pm.expect(\r",
+									"      batchCompositionMap.size,\r",
+									"      \"Invalid batch composition (must have at least 1 material)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    batchCompositionMap.forEach((value, key) => {\r",
+									"      compositionSum += value;\r",
+									"      pm.expect(value, \"Invalid quantity (must be positive [+0])\").to.be.above(\r",
+									"        0\r",
+									"      );\r",
+									"    });\r",
+									"    if (compositionSum != 100) {\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch composition\").to.not.include(\r",
+									"        `batch composition percentage sum should be equal to 100`\r",
+									"      );\r",
+									"    }\r",
+									"    // Quantity\r",
+									"    pm.expect(parseFloat(quantity), \"Invalid quantity\").to.be.above(0);\r",
+									"\r",
+									"    // Score\r",
+									"    pm.expect(\r",
+									"      parseFloat(finalScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for registration and batch creation\r",
+									"  pm.test(\"Batch & Registration are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding registration\").to.not.include(\r",
+									"      `failed to put registration to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added registration & batch\").to.include(\r",
+									"      `registration [${registrationID}] & batch [${batchID}] were successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{inovafil-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"method\": \"{{contract}}:CreateRegistration\",\r\n\t\"args\": [\r\n\t\t\"rg-001\",\r\n\t\t\"PU1\",\r\n\t\t\"b-001\",\r\n\t\t\"ORGANIC_COTTON\",\r\n\t\t\"b-001-iid\",\r\n\t\t\"suppl-001\",\r\n\t\t\"100\",\r\n\t\t\"-3\",\r\n\t\t\"{\\\"organic_cotton\\\": 100}\"\r\n\t]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{inovafil-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{inovafil-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Register Cotton",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"method\": \"StvgdContract:CreateRegistration\",\r\n\t\"args\": [\r\n\t\t\"rg-001\",\r\n\t\t\"PU1\",\r\n\t\t\"b-001\",\r\n\t\t\"FIBER\",\r\n\t\t\"b-001-iid\",\r\n\t\t\"suppl-001\",\r\n\t\t\"100\",\r\n\t\t\"-3\",\r\n\t\t\"{\\\"cotton\\\": 100}\"\r\n\t]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{inovafil-port}}/invoke/{{channel}}/{{chaincode}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{inovafil-port}}",
+									"path": [
+										"invoke",
+										"{{channel}}",
+										"{{chaincode}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Register Polyester",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Registration variables\r",
+									"var batchTypes = [\r",
+									"\t\"CONVENTIONAL_COTTON\",\r",
+									"\t\"ORGANIC_COTTON\",\r",
+									"\t\"RECYCLED_COTTON\",\r",
+									"\t\"PES\",\r",
+									"\t\"PES_RPET\",\r",
+									"\t\"POLYPROPYLENE\",\r",
+									"\t\"POLYAMIDE_6\",\r",
+									"\t\"POLYAMIDE_66\",\r",
+									"\t\"PAN\",\r",
+									"\t\"VISCOSE\",\r",
+									"\t\"FLAX\",\r",
+									"\t\"JUTE\",\r",
+									"\t\"KENAF\",\r",
+									"\t\"BAMBOO\",\r",
+									"\t\"SILK\",\r",
+									"\t\"WOOL\",\r",
+									"\t\"ELASTANE\",\r",
+									"\t\"YARN\",\r",
+									"\t\"RAW_FABRIC\",\r",
+									"\t\"DYED_FABRIC\",\r",
+									"\t\"RAW_KNITTED_FABRIC\",\r",
+									"\t\"DYED_KNITTED_FABRIC\",\r",
+									"\t\"GARMENT\"\r",
+									"];\r",
+									"compositionSum = 0;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var registrationID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  batchID = req.args[2];\r",
+									"  batchType = req.args[3];\r",
+									"  batchInternalID = req.args[4];\r",
+									"  supplierID = req.args[5];\r",
+									"  quantity = req.args[6];\r",
+									"  finalScore = req.args[7];\r",
+									"  batchComposition = req.args[8];\r",
+									"  batchCompositionMap = new Map(Object.entries(JSON.parse(batchComposition)));\r",
+									"\r",
+									"  // Tests for valid registration ID\r",
+									"  pm.test(\"Valid registration ID\", function () {\r",
+									"    pm.expect(registrationID, \"Empty registration ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [rg-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `registration [${registrationID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Got timestamp\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid batch type\r",
+									"  pm.test(\"Batch type is valid (FIBER, YARN, MESH, ...)\", function () {\r",
+									"    pm.expect(batchType, \"Empty batch type ID\").to.not.be.empty;\r",
+									"    pm.expect(batchTypes, \"Inserted batch type not defined\").to.deep.include(\r",
+									"      batchType\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch type\").to.not.include(\r",
+									"      `could not validate batch type`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid batch data\r",
+									"  pm.test(\"Batch data is valid\", function () {\r",
+									"    // Batch ID\r",
+									"    pm.expect(batchID, \"Empty batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"      `could not read batch from world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"      `batch [${batchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(batchInternalID, \"Empty batch internal ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch internal ID\").to.not.include(\r",
+									"      `batch internal ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Supplier ID\r",
+									"    pm.expect(supplierID, \"Empty supplier ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid supplier ID\").to.not.include(\r",
+									"      `supplier ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Batch composition\r",
+									"    pm.expect(\r",
+									"      batchCompositionMap.size,\r",
+									"      \"Invalid batch composition (must have at least 1 material)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    batchCompositionMap.forEach((value, key) => {\r",
+									"      compositionSum += value;\r",
+									"      pm.expect(value, \"Invalid quantity (must be positive [+0])\").to.be.above(\r",
+									"        0\r",
+									"      );\r",
+									"    });\r",
+									"    if (compositionSum != 100) {\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch composition\").to.not.include(\r",
+									"        `batch composition percentage sum should be equal to 100`\r",
+									"      );\r",
+									"    }\r",
+									"    // Quantity\r",
+									"    pm.expect(parseFloat(quantity), \"Invalid quantity\").to.be.above(0);\r",
+									"\r",
+									"    // Score\r",
+									"    pm.expect(\r",
+									"      parseFloat(finalScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for registration and batch creation\r",
+									"  pm.test(\"Batch & Registration are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding registration\").to.not.include(\r",
+									"      `failed to put registration to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added registration & batch\").to.include(\r",
+									"      `registration [${registrationID}] & batch [${batchID}] were successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{inovafil-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"method\": \"{{contract}}:CreateRegistration\",\r\n    \"args\": [\r\n\t\t\"rg-002\",\r\n\t\t\"PU1\",\r\n\t\t\"b-002\",\r\n\t\t\"POLYAMIDE_6\",\r\n\t\t\"b-002-iid\",\r\n\t\t\"suppl001\",\r\n\t\t\"100\",\r\n\t\t\"-3\",\r\n\t\t\"{\\\"polyamide6\\\": 100}\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{inovafil-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{inovafil-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Register Polyester",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"method\": \"{{contract}}:CreateRegistration\",\r\n    \"args\": [\r\n\t\t\"rg-002\",\r\n\t\t\"PU1\",\r\n\t\t\"b-002\",\r\n\t\t\"FIBER\",\r\n\t\t\"b-002-iid\",\r\n\t\t\"suppl001\",\r\n\t\t\"KG\",\r\n\t\t\"100\",\r\n\t\t\"-3\",\r\n\t\t\"{\\\"polyester\\\": 100}\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{inovafil-port}}/invoke/{{channel}}/{{chaincode}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{inovafil-port}}",
+									"path": [
+										"invoke",
+										"{{channel}}",
+										"{{chaincode}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Produce Cotton-Poly Yarn",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Production variables\r",
+									"var batchTypes = [\r",
+									"\t\"CONVENTIONAL_COTTON\",\r",
+									"\t\"ORGANIC_COTTON\",\r",
+									"\t\"RECYCLED_COTTON\",\r",
+									"\t\"PES\",\r",
+									"\t\"PES_RPET\",\r",
+									"\t\"POLYPROPYLENE\",\r",
+									"\t\"POLYAMIDE_6\",\r",
+									"\t\"POLYAMIDE_66\",\r",
+									"\t\"PAN\",\r",
+									"\t\"VISCOSE\",\r",
+									"\t\"FLAX\",\r",
+									"\t\"JUTE\",\r",
+									"\t\"KENAF\",\r",
+									"\t\"BAMBOO\",\r",
+									"\t\"SILK\",\r",
+									"\t\"WOOL\",\r",
+									"\t\"ELASTANE\",\r",
+									"\t\"YARN\",\r",
+									"\t\"RAW_FABRIC\",\r",
+									"\t\"DYED_FABRIC\",\r",
+									"\t\"RAW_KNITTED_FABRIC\",\r",
+									"\t\"DYED_KNITTED_FABRIC\",\r",
+									"\t\"GARMENT\"\r",
+									"];\r",
+									"productionTypes = [\r",
+									"  \"SPINNING\",\r",
+									"  \"WEAVING\",\r",
+									"  \"KNITTING\",\r",
+									"  \"DYEING_FINISHING\",\r",
+									"  \"CONFECTION\",\r",
+									"];\r",
+									"compositionSum = 0;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var productionID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  productionType = req.args[2];\r",
+									"  activityStartDate = req.args[3];\r",
+									"  batchID = req.args[4];\r",
+									"  batchType = req.args[5];\r",
+									"  batchInternalID = req.args[6];\r",
+									"  supplierID = req.args[7];\r",
+									"  inputBatches = new Map(Object.entries(JSON.parse(req.args[8])));\r",
+									"  batchComposition = new Map(Object.entries(JSON.parse(req.args[9])));\r",
+									"  quantity = req.args[10];\r",
+									"  finalScore = req.args[11];\r",
+									"  productionScore = req.args[12];\r",
+									"  ses = req.args[13];\r",
+									"\r",
+									"  // Tests for valid production ID\r",
+									"  pm.test(\"Valid production ID\", function () {\r",
+									"    pm.expect(productionID, \"Empty production ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [p-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `production [${productionID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Valid timestamps\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not parse activity start date:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `activity start date can't be after the activity end date:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid activity type\r",
+									"  pm.test(\r",
+									"    \"Production type is valid (SPINNING, WEAVING, KNITTING, ...)\",\r",
+									"    function () {\r",
+									"      pm.expect(productionType, \"Empty activity type ID\").to.not.be.empty;\r",
+									"      pm.expect(\r",
+									"        productionTypes,\r",
+									"        \"Inserted activity type not defined\"\r",
+									"      ).to.deep.include(productionType);\r",
+									"      pm.expect(pm.response.text(), \"Invalid activity type\").to.not.include(\r",
+									"        `could not validate activity type:`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid scores\r",
+									"  pm.test(\"Valid activity scores\", function () {\r",
+									"    pm.expect(\r",
+									"      parseFloat(productionScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"    pm.expect(\r",
+									"      parseFloat(ses),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid input batches data\r",
+									"  pm.test(\"Input batches are valid\", function () {\r",
+									"    pm.expect(\r",
+									"      inputBatches.size,\r",
+									"      \"Invalid input batches (must have at least 1 batch)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    inputBatches.forEach((value, key) => {\r",
+									"      pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"        `could not read batch from world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"        `batch [${key}] does not exist`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Input batch in transit\").to.not.include(\r",
+									"        `batch [${key}] currently in transit`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        value,\r",
+									"        \"Invalid input batch quantity (must be positive [+0])\"\r",
+									"      ).to.be.above(0);\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid input batch quantity (exceeds batch total quantity\"\r",
+									"      ).to.not.include(\r",
+									"        `input batches' quantities must not exceed the batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"        `failed to put batch to world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error deleting batch\").to.not.include(\r",
+									"        `failed to delete batch to world state:`\r",
+									"      );\r",
+									"    });\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid output batch data\r",
+									"  pm.test(\"Batch data is valid\", function () {\r",
+									"    // Batch ID\r",
+									"    pm.expect(batchID, \"Empty batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"      `could not read batch from world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"      `batch [${batchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(batchInternalID, \"Empty batch internal ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch internal ID\").to.not.include(\r",
+									"      `batch internal ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Supplier ID\r",
+									"    pm.expect(supplierID, \"Empty supplier ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid supplier ID\").to.not.include(\r",
+									"      `supplier ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Batch type\r",
+									"    pm.expect(batchType, \"Empty batch type ID\").to.not.be.empty;\r",
+									"    pm.expect(batchTypes, \"Inserted batch type not defined\").to.deep.include(\r",
+									"      batchType\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch type\").to.not.include(\r",
+									"      `could not validate batch type`\r",
+									"    );\r",
+									"\r",
+									"    // Quantity\r",
+									"    pm.expect(parseFloat(quantity), \"Invalid quantity\").to.be.above(0);\r",
+									"\r",
+									"    // Batch composition\r",
+									"    pm.expect(\r",
+									"      batchComposition.size,\r",
+									"      \"Invalid batch composition (must have at least 1 material)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    batchComposition.forEach((value, key) => {\r",
+									"      compositionSum += value;\r",
+									"      pm.expect(value, \"Invalid quantity (must be positive [+0])\").to.be.above(\r",
+									"        0\r",
+									"      );\r",
+									"    });\r",
+									"    if (compositionSum != 100) {\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch composition\").to.not.include(\r",
+									"        `batch composition percentage sum should be equal to 100`\r",
+									"      );\r",
+									"    }\r",
+									"\r",
+									"    // Final score\r",
+									"    pm.expect(\r",
+									"      parseFloat(finalScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for production and batch creation\r",
+									"  pm.test(\"Batch & Production are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding production\").to.not.include(\r",
+									"      `failed to put production to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added production & batch\").to.include(\r",
+									"      `production activity [${productionID}] & batch [${batchID}] were successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{inovafil-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"method\": \"{{contract}}:CreateProduction\",\r\n\t\"args\": [\r\n\t\t\"p-001\",\r\n\t\t\"PU1\",\r\n\t\t\"SPINNING\",\r\n\t\t\"2022-09-12T11:45:26.371Z\",\r\n\t\t\"b-003\",\r\n\t\t\"YARN\",\r\n\t\t\"b-003-iid\",\r\n\t\t\"suppl-001\",\r\n\t\t\"{\\\"b-001\\\": 100, \\\"b-002\\\": 100}\",\r\n\t\t\"{\\\"organic_cotton\\\": 50,\\\"polyamide6\\\": 50}\",\r\n\t\t\"200\",\r\n\t\t\"-3\",\r\n\t\t\"-1\",\r\n\t\t\"-9\"\r\n\t]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{inovafil-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{inovafil-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Produce Cotton-Poly Yarn",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"method\": \"{{contract}}:CreateProduction\",\r\n\t\"args\": [\r\n\t\t\"p-001\",\r\n\t\t\"PU1\",\r\n\t\t\"SPINNING\",\r\n\t\t\"2022-09-12T11:45:26.371Z\",\r\n\t\t\"b-003\",\r\n\t\t\"YARN\",\r\n\t\t\"b-003-iid\",\r\n\t\t\"suppl-001\",\r\n\t\t\"KG\",\r\n\t\t\"{\\\"b-001\\\": 100, \\\"b-002\\\": 100}\",\r\n\t\t\"{\\\"cotton\\\": 50,\\\"polyester\\\": 50}\",\r\n\t\t\"200\",\r\n\t\t\"-3\",\r\n\t\t\"-1\",\r\n\t\t\"-9\"\r\n\t]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{inovafil-port}}/invoke/{{channel}}/{{chaincode}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{inovafil-port}}",
+									"path": [
+										"invoke",
+										"{{channel}}",
+										"{{chaincode}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Ship to A.SAMPAIO",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Transport variables\r",
+									"var transportTypes = [\"TERRESTRIAL_SMALL\",\r",
+									"\"TERRESTRIAL_BIG\",\r",
+									"\"MARITIME\",\r",
+									"\"AERIAL\",\r",
+									"\"RAILROADER\"];\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var transportID = req.args[0];\r",
+									"  originProductionUnitInternalID = req.args[1];\r",
+									"  destinationProductionUnitID = req.args[2];\r",
+									"  transportType = req.args[3];\r",
+									"  activityDate = req.args[4];\r",
+									"  inputBatches = new Map(Object.entries(JSON.parse(req.args[5])));\r",
+									"  isReturn = req.args[6];\r",
+									"\r",
+									"  // Tests for valid transport ID\r",
+									"  pm.test(\"Valid transport ID\", function () {\r",
+									"    pm.expect(transportID, \"Empty transport ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [t-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `transport activity [${transportID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Valid timestamps\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not parse activity start date:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `activity start date can't be after the activity end date:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid activity type\r",
+									"  pm.test(\"Transport type is valid (ROAD, MARITIME, AIR, ...)\", function () {\r",
+									"    pm.expect(transportType, \"Empty activity type\").to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      transportTypes,\r",
+									"      \"Inserted activity type not defined\"\r",
+									"    ).to.deep.include(transportType);\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity type\").to.not.include(\r",
+									"      `could not validate activity type:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid transport unit internal ID\r",
+									"  pm.test(\"Production unit IDs are valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      originProductionUnitInternalID,\r",
+									"      \"Empty origin production unit internal ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      destinationProductionUnitID,\r",
+									"      \"Empty destination production unit ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid transport unit internal ID\"\r",
+									"    ).to.not.include(`destination production unit's ID must not be empty`);\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Origin can't be the same as destination\"\r",
+									"    ).to.not.include(\r",
+									"      `must be different from destination production unit ID [${destinationProductionUnitID}]`\r",
+									"    );\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Can only transport self-owned batches\"\r",
+									"    ).to.not.include(\r",
+									"      `can only transport batches that are in current production unit`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid input batches data\r",
+									"  pm.test(\"Input batches are valid\", function () {\r",
+									"    pm.expect(\r",
+									"      inputBatches.size,\r",
+									"      \"Invalid input batches (must have only 1 batch)\"\r",
+									"    ).to.be.eql(1);\r",
+									"    inputBatches.forEach((value, key) => {\r",
+									"      pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"        `could not read batch from world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"        `batch [${key}] does not exist`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Input batch in transit\").to.not.include(\r",
+									"        `batch [${key}] currently in transit`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Must return total quantity if it is a return transport\"\r",
+									"      ).to.not.include(\r",
+									"        `when returning a batch, input batch quantity [${value}] must be equal to batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        value,\r",
+									"        \"Invalid input batch quantity (must be positive [+0])\"\r",
+									"      ).to.be.above(0);\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid input batch quantity (exceeds batch total quantity\"\r",
+									"      ).to.not.include(\r",
+									"        `input batches' quantities must not exceed the batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"        `failed to put batch to world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error deleting batch\").to.not.include(\r",
+									"        `failed to delete batch to world state:`\r",
+									"      );\r",
+									"    });\r",
+									"  });\r",
+									"\r",
+									"  // Tests for transport and batch creation\r",
+									"  pm.test(\"Batch & Transport are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"      `failed to put remaining batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put updated batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding transport\").to.not.include(\r",
+									"      `failed to put transport to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added transport & batch\").to.include(\r",
+									"      `successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{inovafil-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"method\": \"{{contract}}:CreateTransport\",\r\n    \"args\": [\r\n        \"t-001\",\r\n        \"PU1\",\r\n        \"ASampaioMSP:PU1\",\r\n        \"TERRESTRIAL_SMALL\",\r\n        \"2022-09-15T11:45:26.371Z\",\r\n        \"{\\\"b-003\\\": 100}\",\r\n\t\t\"false\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{inovafil-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{inovafil-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Ship to A.SAMPAIO",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"method\": \"{{contract}}:CreateTransport\",\r\n    \"args\": [\r\n        \"t-001\",\r\n        \"PU1\",\r\n        \"ASampaioMSP:PU1\",\r\n        \"ROAD\",\r\n        \"2022-09-15T11:45:26.371Z\",\r\n        \"{\\\"b-003\\\": 100}\",\r\n\t\t\"false\"\r\n    ]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{inovafil-port}}/invoke/{{channel}}/{{chaincode}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{inovafil-port}}",
+									"path": [
+										"invoke",
+										"{{channel}}",
+										"{{chaincode}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "A.SAMPAIO",
+			"item": [
+				{
+					"name": "Enroll A.SAMPAIO Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('asampaio-bearer', res.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"admin\",\r\n    \"secret\": \"adminpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{asampaio-port}}/user/enroll",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{asampaio-port}}",
+							"path": [
+								"user",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register A.SAMPAIO Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{asampaio-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"operator\",\r\n    \"secret\": \"operatorpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{asampaio-port}}/user/register",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{asampaio-port}}",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll A.SAMPAIO Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('asampaio-bearer', res.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"operator\",\r\n    \"secret\": \"operatorpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{asampaio-port}}/user/enroll",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{asampaio-port}}",
+							"path": [
+								"user",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Yarn Batch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var receptionID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  activityDate = req.args[2];\r",
+									"  receivedBatchID = req.args[3];\r",
+									"  newBatchID = req.args[4];\r",
+									"  newBatchInternalID = req.args[5];\r",
+									"  isAccepted = req.args[6];\r",
+									"  transportScore = req.args[7];\r",
+									"  ses = req.args[8];\r",
+									"  distance = req.args[9];\r",
+									"\r",
+									"  // Tests for valid reception ID\r",
+									"  pm.test(\"Valid reception ID\", function () {\r",
+									"    pm.expect(receptionID, \"Empty reception ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [rc-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `reception [${receptionID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Got timestamp\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid production unit ID\").to.not.include(\r",
+									"      `must be different from batch's production unit ID`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid received batch data\r",
+									"  pm.test(\"Received batch data is valid\", function () {\r",
+									"    // Received batch ID\r",
+									"    pm.expect(receivedBatchID, \"Empty received batch ID\").to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Error reading received batch\"\r",
+									"    ).to.not.include(`could not read batch from world state:`);\r",
+									"    pm.expect(pm.response.text(), \"Invalid received batch ID\").to.not.include(\r",
+									"      `batch [${receivedBatchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid received batch transit state\"\r",
+									"    ).to.not.include(`batch [${receivedBatchID}] is not in transit`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid new batch data\r",
+									"  pm.test(\"New batch data is valid\", function () {\r",
+									"    // New batch ID\r",
+									"    pm.expect(newBatchID, \"Empty new batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid new batch ID\").to.not.include(\r",
+									"      `batch [${newBatchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid new batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(\r",
+									"      newBatchInternalID,\r",
+									"      \"Empty new batch internal ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid new batch internal ID\"\r",
+									"    ).to.not.include(`batch internal ID must not be empty`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid scores\r",
+									"  pm.test(\"Valid activity scores\", function () {\r",
+									"    pm.expect(\r",
+									"      parseFloat(transportScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"    pm.expect(\r",
+									"      parseFloat(ses),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid distance\r",
+									"  pm.test(\"Valid distance\", function () {\r",
+									"    pm.expect(parseFloat(distance), \"Invalid distance\").to.be.at.least(0);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for reception and batch creation\r",
+									"  pm.test(\"Batch & Reception are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding reception\").to.not.include(\r",
+									"      `failed to put reception to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added reception & batch\").to.include(\r",
+									"      `reception activity [${receptionID}] & batch [${newBatchID}] were successfully added to the ledger. batch [${receivedBatchID}] was deleted successfully`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{asampaio-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"method\": \"{{contract}}:CreateReception\",\r\n\t\"args\": [\r\n\t\t\"rc-001\",\r\n\t\t\"PU1\",\r\n\t\t\"2022-09-17T15:50:14\",\r\n\t\t\"b-003\",\r\n\t\t\"b-004\",\r\n\t\t\"b-004-iid\",\r\n\t\t\"true\",\r\n\t\t\"-7\",\r\n\t\t\"-3\",\r\n\t\t\"150\"\r\n\t]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{asampaio-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{asampaio-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "Valid Receive Yarn Batch",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\t\"method\": \"{{contract}}:CreateReception\",\r\n\t\"args\": [\r\n\t\t\"rc-001\",\r\n\t\t\"PU1\",\r\n\t\t\"2022-09-17T15:50:14\",\r\n\t\t\"b-003\",\r\n\t\t\"b-004\",\r\n\t\t\"b-004-iid\",\r\n\t\t\"true\",\r\n\t\t\"-7\",\r\n\t\t\"-3\",\r\n\t\t\"150\"\r\n\t]\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://{{host}}:{{asampaio-port}}/invoke/{{channel}}/{{chaincode}}",
+									"protocol": "http",
+									"host": [
+										"{{host}}"
+									],
+									"port": "{{asampaio-port}}",
+									"path": [
+										"invoke",
+										"{{channel}}",
+										"{{chaincode}}"
+									]
+								}
+							},
+							"_postman_previewlanguage": null,
+							"header": null,
+							"cookie": [],
+							"body": null
+						}
+					]
+				},
+				{
+					"name": "Produce Cotton-Poly Fabric",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Production variables\r",
+									"var batchTypes = [\r",
+									"\t\"CONVENTIONAL_COTTON\",\r",
+									"\t\"ORGANIC_COTTON\",\r",
+									"\t\"RECYCLED_COTTON\",\r",
+									"\t\"PES\",\r",
+									"\t\"PES_RPET\",\r",
+									"\t\"POLYPROPYLENE\",\r",
+									"\t\"POLYAMIDE_6\",\r",
+									"\t\"POLYAMIDE_66\",\r",
+									"\t\"PAN\",\r",
+									"\t\"VISCOSE\",\r",
+									"\t\"FLAX\",\r",
+									"\t\"JUTE\",\r",
+									"\t\"KENAF\",\r",
+									"\t\"BAMBOO\",\r",
+									"\t\"SILK\",\r",
+									"\t\"WOOL\",\r",
+									"\t\"ELASTANE\",\r",
+									"\t\"YARN\",\r",
+									"\t\"RAW_FABRIC\",\r",
+									"\t\"DYED_FABRIC\",\r",
+									"\t\"RAW_KNITTED_FABRIC\",\r",
+									"\t\"DYED_KNITTED_FABRIC\",\r",
+									"\t\"GARMENT\"\r",
+									"];\r",
+									"productionTypes = [\r",
+									"  \"SPINNING\",\r",
+									"  \"WEAVING\",\r",
+									"  \"KNITTING\",\r",
+									"  \"DYEING_FINISHING\",\r",
+									"  \"CONFECTION\",\r",
+									"];\r",
+									"compositionSum = 0;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var productionID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  productionType = req.args[2];\r",
+									"  activityStartDate = req.args[3];\r",
+									"  batchID = req.args[4];\r",
+									"  batchType = req.args[5];\r",
+									"  batchInternalID = req.args[6];\r",
+									"  supplierID = req.args[7];\r",
+									"  inputBatches = new Map(Object.entries(JSON.parse(req.args[8])));\r",
+									"  batchComposition = new Map(Object.entries(JSON.parse(req.args[9])));\r",
+									"  quantity = req.args[10];\r",
+									"  finalScore = req.args[11];\r",
+									"  productionScore = req.args[12];\r",
+									"  ses = req.args[13];\r",
+									"\r",
+									"  // Tests for valid production ID\r",
+									"  pm.test(\"Valid production ID\", function () {\r",
+									"    pm.expect(productionID, \"Empty production ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [p-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `production [${productionID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Valid timestamps\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not parse activity start date:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `activity start date can't be after the activity end date:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid activity type\r",
+									"  pm.test(\r",
+									"    \"Production type is valid (SPINNING, WEAVING, KNITTING, ...)\",\r",
+									"    function () {\r",
+									"      pm.expect(productionType, \"Empty activity type ID\").to.not.be.empty;\r",
+									"      pm.expect(\r",
+									"        productionTypes,\r",
+									"        \"Inserted activity type not defined\"\r",
+									"      ).to.deep.include(productionType);\r",
+									"      pm.expect(pm.response.text(), \"Invalid activity type\").to.not.include(\r",
+									"        `could not validate activity type:`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid scores\r",
+									"  pm.test(\"Valid activity scores\", function () {\r",
+									"    pm.expect(\r",
+									"      parseFloat(productionScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"    pm.expect(\r",
+									"      parseFloat(ses),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid input batches data\r",
+									"  pm.test(\"Input batches are valid\", function () {\r",
+									"    pm.expect(\r",
+									"      inputBatches.size,\r",
+									"      \"Invalid input batches (must have at least 1 batch)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    inputBatches.forEach((value, key) => {\r",
+									"      pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"        `could not read batch from world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"        `batch [${key}] does not exist`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Input batch in transit\").to.not.include(\r",
+									"        `batch [${key}] currently in transit`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        value,\r",
+									"        \"Invalid input batch quantity (must be positive [+0])\"\r",
+									"      ).to.be.above(0);\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid input batch quantity (exceeds batch total quantity\"\r",
+									"      ).to.not.include(\r",
+									"        `input batches' quantities must not exceed the batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"        `failed to put batch to world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error deleting batch\").to.not.include(\r",
+									"        `failed to delete batch to world state:`\r",
+									"      );\r",
+									"    });\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid output batch data\r",
+									"  pm.test(\"Batch data is valid\", function () {\r",
+									"    // Batch ID\r",
+									"    pm.expect(batchID, \"Empty batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"      `could not read batch from world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"      `batch [${batchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(batchInternalID, \"Empty batch internal ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch internal ID\").to.not.include(\r",
+									"      `batch internal ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Supplier ID\r",
+									"    pm.expect(supplierID, \"Empty supplier ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid supplier ID\").to.not.include(\r",
+									"      `supplier ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Batch type\r",
+									"    pm.expect(batchType, \"Empty batch type ID\").to.not.be.empty;\r",
+									"    pm.expect(batchTypes, \"Inserted batch type not defined\").to.deep.include(\r",
+									"      batchType\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch type\").to.not.include(\r",
+									"      `could not validate batch type`\r",
+									"    );\r",
+									"\r",
+									"    // Quantity\r",
+									"    pm.expect(parseFloat(quantity), \"Invalid quantity\").to.be.above(0);\r",
+									"\r",
+									"    // Batch composition\r",
+									"    pm.expect(\r",
+									"      batchComposition.size,\r",
+									"      \"Invalid batch composition (must have at least 1 material)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    batchComposition.forEach((value, key) => {\r",
+									"      compositionSum += value;\r",
+									"      pm.expect(value, \"Invalid quantity (must be positive [+0])\").to.be.above(\r",
+									"        0\r",
+									"      );\r",
+									"    });\r",
+									"    if (compositionSum != 100) {\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch composition\").to.not.include(\r",
+									"        `batch composition percentage sum should be equal to 100`\r",
+									"      );\r",
+									"    }\r",
+									"\r",
+									"    // Final score\r",
+									"    pm.expect(\r",
+									"      parseFloat(finalScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for production and batch creation\r",
+									"  pm.test(\"Batch & Production are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding production\").to.not.include(\r",
+									"      `failed to put production to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added production & batch\").to.include(\r",
+									"      `production activity [${productionID}] & batch [${batchID}] were successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{asampaio-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"method\": \"{{contract}}:CreateProduction\",\r\n    \"args\": [\r\n\t\t\"p-002\",\r\n\t\t\"PU1\",\r\n\t\t\"WEAVING\",\r\n\t\t\"2022-09-16T11:45:26.371Z\",\r\n\t\t\"b-005\",\r\n\t\t\"RAW_FABRIC\",\r\n\t\t\"b-005-iid\",\r\n\t\t\"suppl002\",\r\n\t\t\"{\\\"b-004\\\": 100}\",\r\n\t\t\"{\\\"organic_cotton\\\": 67,\\\"polyamide6\\\": 33}\",\r\n\t\t\"50\",\r\n\t\t\"2\",\r\n\t\t\"-5\",\r\n\t\t\"2\"\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{asampaio-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{asampaio-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ship to TINTEX",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Transport variables\r",
+									"var transportTypes = [\"TERRESTRIAL_SMALL\",\r",
+									"\"TERRESTRIAL_BIG\",\r",
+									"\"MARITIME\",\r",
+									"\"AERIAL\",\r",
+									"\"RAILROADER\"];\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var transportID = req.args[0];\r",
+									"  originProductionUnitInternalID = req.args[1];\r",
+									"  destinationProductionUnitID = req.args[2];\r",
+									"  transportType = req.args[3];\r",
+									"  activityDate = req.args[4];\r",
+									"  inputBatches = new Map(Object.entries(JSON.parse(req.args[5])));\r",
+									"  isReturn = req.args[6];\r",
+									"\r",
+									"  // Tests for valid transport ID\r",
+									"  pm.test(\"Valid transport ID\", function () {\r",
+									"    pm.expect(transportID, \"Empty transport ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [t-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `transport activity [${transportID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Valid timestamps\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not parse activity start date:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `activity start date can't be after the activity end date:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid activity type\r",
+									"  pm.test(\"Transport type is valid (ROAD, MARITIME, AIR, ...)\", function () {\r",
+									"    pm.expect(transportType, \"Empty activity type\").to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      transportTypes,\r",
+									"      \"Inserted activity type not defined\"\r",
+									"    ).to.deep.include(transportType);\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity type\").to.not.include(\r",
+									"      `could not validate activity type:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid transport unit internal ID\r",
+									"  pm.test(\"Production unit IDs are valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      originProductionUnitInternalID,\r",
+									"      \"Empty origin production unit internal ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      destinationProductionUnitID,\r",
+									"      \"Empty destination production unit ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid transport unit internal ID\"\r",
+									"    ).to.not.include(`destination production unit's ID must not be empty`);\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Origin can't be the same as destination\"\r",
+									"    ).to.not.include(\r",
+									"      `must be different from destination production unit ID [${destinationProductionUnitID}]`\r",
+									"    );\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Can only transport self-owned batches\"\r",
+									"    ).to.not.include(\r",
+									"      `can only transport batches that are in current production unit`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid input batches data\r",
+									"  pm.test(\"Input batches are valid\", function () {\r",
+									"    pm.expect(\r",
+									"      inputBatches.size,\r",
+									"      \"Invalid input batches (must have only 1 batch)\"\r",
+									"    ).to.be.eql(1);\r",
+									"    inputBatches.forEach((value, key) => {\r",
+									"      pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"        `could not read batch from world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"        `batch [${key}] does not exist`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Input batch in transit\").to.not.include(\r",
+									"        `batch [${key}] currently in transit`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Must return total quantity if it is a return transport\"\r",
+									"      ).to.not.include(\r",
+									"        `when returning a batch, input batch quantity [${value}] must be equal to batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        value,\r",
+									"        \"Invalid input batch quantity (must be positive [+0])\"\r",
+									"      ).to.be.above(0);\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid input batch quantity (exceeds batch total quantity\"\r",
+									"      ).to.not.include(\r",
+									"        `input batches' quantities must not exceed the batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"        `failed to put batch to world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error deleting batch\").to.not.include(\r",
+									"        `failed to delete batch to world state:`\r",
+									"      );\r",
+									"    });\r",
+									"  });\r",
+									"\r",
+									"  // Tests for transport and batch creation\r",
+									"  pm.test(\"Batch & Transport are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"      `failed to put remaining batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put updated batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding transport\").to.not.include(\r",
+									"      `failed to put transport to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added transport & batch\").to.include(\r",
+									"      `successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{asampaio-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"method\": \"{{contract}}:CreateTransport\",\r\n    \"args\": [\r\n        \"t-002\",\r\n        \"PU1\",\r\n        \"TintexMSP:PU1\",\r\n        \"TERRESTRIAL_BIG\",\r\n        \"2022-09-21T11:45:26.371Z\",\r\n        \"{\\\"b-005\\\": 50}\",\r\n\t\t\"false\"\r\n    ]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{asampaio-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{asampaio-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TINTEX",
+			"item": [
+				{
+					"name": "Enroll TINTEX Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('tintex-bearer', res.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"admin\",\r\n    \"secret\": \"adminpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tintex-port}}/user/enroll",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tintex-port}}",
+							"path": [
+								"user",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register TINTEX Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tintex-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"operator\",\r\n    \"secret\": \"operatorpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tintex-port}}/user/register",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tintex-port}}",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll TINTEX Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('tintex-bearer', res.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"operator\",\r\n    \"secret\": \"operatorpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tintex-port}}/user/enroll",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tintex-port}}",
+							"path": [
+								"user",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Fabric Batch",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var receptionID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  activityDate = req.args[2];\r",
+									"  receivedBatchID = req.args[3];\r",
+									"  newBatchID = req.args[4];\r",
+									"  newBatchInternalID = req.args[5];\r",
+									"  isAccepted = req.args[6];\r",
+									"  transportScore = req.args[7];\r",
+									"  ses = req.args[8];\r",
+									"  distance = req.args[9];\r",
+									"\r",
+									"  // Tests for valid reception ID\r",
+									"  pm.test(\"Valid reception ID\", function () {\r",
+									"    pm.expect(receptionID, \"Empty reception ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [rc-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `reception [${receptionID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Got timestamp\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid production unit ID\").to.not.include(\r",
+									"      `must be different from batch's production unit ID`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid received batch data\r",
+									"  pm.test(\"Received batch data is valid\", function () {\r",
+									"    // Received batch ID\r",
+									"    pm.expect(receivedBatchID, \"Empty received batch ID\").to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Error reading received batch\"\r",
+									"    ).to.not.include(`could not read batch from world state:`);\r",
+									"    pm.expect(pm.response.text(), \"Invalid received batch ID\").to.not.include(\r",
+									"      `batch [${receivedBatchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid received batch transit state\"\r",
+									"    ).to.not.include(`batch [${receivedBatchID}] is not in transit`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid new batch data\r",
+									"  pm.test(\"New batch data is valid\", function () {\r",
+									"    // New batch ID\r",
+									"    pm.expect(newBatchID, \"Empty new batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid new batch ID\").to.not.include(\r",
+									"      `batch [${newBatchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid new batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(\r",
+									"      newBatchInternalID,\r",
+									"      \"Empty new batch internal ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid new batch internal ID\"\r",
+									"    ).to.not.include(`batch internal ID must not be empty`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid scores\r",
+									"  pm.test(\"Valid activity scores\", function () {\r",
+									"    pm.expect(\r",
+									"      parseFloat(transportScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"    pm.expect(\r",
+									"      parseFloat(ses),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid distance\r",
+									"  pm.test(\"Valid distance\", function () {\r",
+									"    pm.expect(parseFloat(distance), \"Invalid distance\").to.be.at.least(0);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for reception and batch creation\r",
+									"  pm.test(\"Batch & Reception are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding reception\").to.not.include(\r",
+									"      `failed to put reception to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added reception & batch\").to.include(\r",
+									"      `reception activity [${receptionID}] & batch [${newBatchID}] were successfully added to the ledger. batch [${receivedBatchID}] was deleted successfully`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tintex-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"method\": \"{{contract}}:CreateReception\",\r\n\t\"args\": [\r\n\t\t\"rc-002\",\r\n\t\t\"PU1\",\r\n\t\t\"2022-09-17T15:50:14\",\r\n\t\t\"b-005\",\r\n\t\t\"b-006\",\r\n\t\t\"b-006-iid\",\r\n\t\t\"true\",\r\n\t\t\"-7\",\r\n\t\t\"-3\",\r\n\t\t\"150\"\r\n\t]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tintex-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tintex-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register Black Dye",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Registration variables\r",
+									"var batchTypes = [\r",
+									"\t\"CONVENTIONAL_COTTON\",\r",
+									"\t\"ORGANIC_COTTON\",\r",
+									"\t\"RECYCLED_COTTON\",\r",
+									"\t\"PES\",\r",
+									"\t\"PES_RPET\",\r",
+									"\t\"POLYPROPYLENE\",\r",
+									"\t\"POLYAMIDE_6\",\r",
+									"\t\"POLYAMIDE_66\",\r",
+									"\t\"PAN\",\r",
+									"\t\"VISCOSE\",\r",
+									"\t\"FLAX\",\r",
+									"\t\"JUTE\",\r",
+									"\t\"KENAF\",\r",
+									"\t\"BAMBOO\",\r",
+									"\t\"SILK\",\r",
+									"\t\"WOOL\",\r",
+									"\t\"ELASTANE\",\r",
+									"\t\"YARN\",\r",
+									"\t\"RAW_FABRIC\",\r",
+									"\t\"DYED_FABRIC\",\r",
+									"\t\"RAW_KNITTED_FABRIC\",\r",
+									"\t\"DYED_KNITTED_FABRIC\",\r",
+									"\t\"GARMENT\"\r",
+									"];\r",
+									"compositionSum = 0;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var registrationID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  batchID = req.args[2];\r",
+									"  batchType = req.args[3];\r",
+									"  batchInternalID = req.args[4];\r",
+									"  supplierID = req.args[5];\r",
+									"  quantity = req.args[6];\r",
+									"  finalScore = req.args[7];\r",
+									"  batchComposition = req.args[8];\r",
+									"  batchCompositionMap = new Map(Object.entries(JSON.parse(batchComposition)));\r",
+									"\r",
+									"  // Tests for valid registration ID\r",
+									"  pm.test(\"Valid registration ID\", function () {\r",
+									"    pm.expect(registrationID, \"Empty registration ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [rg-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `registration [${registrationID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Got timestamp\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid batch type\r",
+									"  pm.test(\"Batch type is valid (FIBER, YARN, MESH, ...)\", function () {\r",
+									"    pm.expect(batchType, \"Empty batch type ID\").to.not.be.empty;\r",
+									"    pm.expect(batchTypes, \"Inserted batch type not defined\").to.deep.include(\r",
+									"      batchType\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch type\").to.not.include(\r",
+									"      `could not validate batch type`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid batch data\r",
+									"  pm.test(\"Batch data is valid\", function () {\r",
+									"    // Batch ID\r",
+									"    pm.expect(batchID, \"Empty batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"      `could not read batch from world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"      `batch [${batchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(batchInternalID, \"Empty batch internal ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch internal ID\").to.not.include(\r",
+									"      `batch internal ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Supplier ID\r",
+									"    pm.expect(supplierID, \"Empty supplier ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid supplier ID\").to.not.include(\r",
+									"      `supplier ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Batch composition\r",
+									"    pm.expect(\r",
+									"      batchCompositionMap.size,\r",
+									"      \"Invalid batch composition (must have at least 1 material)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    batchCompositionMap.forEach((value, key) => {\r",
+									"      compositionSum += value;\r",
+									"      pm.expect(value, \"Invalid quantity (must be positive [+0])\").to.be.above(\r",
+									"        0\r",
+									"      );\r",
+									"    });\r",
+									"    if (compositionSum != 100) {\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch composition\").to.not.include(\r",
+									"        `batch composition percentage sum should be equal to 100`\r",
+									"      );\r",
+									"    }\r",
+									"    // Quantity\r",
+									"    pm.expect(parseFloat(quantity), \"Invalid quantity\").to.be.above(0);\r",
+									"\r",
+									"    // Score\r",
+									"    pm.expect(\r",
+									"      parseFloat(finalScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for registration and batch creation\r",
+									"  pm.test(\"Batch & Registration are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding registration\").to.not.include(\r",
+									"      `failed to put registration to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added registration & batch\").to.include(\r",
+									"      `registration [${registrationID}] & batch [${batchID}] were successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tintex-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"method\": \"{{contract}}:CreateRegistration\",\r\n    \"args\": [\r\n\t\t\"rg-003\",\r\n\t\t\"PU1\",\r\n\t\t\"b-007\",\r\n\t\t\"PES_RPET\",\r\n\t\t\"b-007-iid\",\r\n\t\t\"suppl003\",\r\n\t\t\"100\",\r\n\t\t\"-3\",\r\n\t\t\"{\\\"black_dye\\\": 100}\"\r\n    ]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tintex-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tintex-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Produce Black Cotton-Poly Fabric",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Production variables\r",
+									"var batchTypes = [\r",
+									"\t\"CONVENTIONAL_COTTON\",\r",
+									"\t\"ORGANIC_COTTON\",\r",
+									"\t\"RECYCLED_COTTON\",\r",
+									"\t\"PES\",\r",
+									"\t\"PES_RPET\",\r",
+									"\t\"POLYPROPYLENE\",\r",
+									"\t\"POLYAMIDE_6\",\r",
+									"\t\"POLYAMIDE_66\",\r",
+									"\t\"PAN\",\r",
+									"\t\"VISCOSE\",\r",
+									"\t\"FLAX\",\r",
+									"\t\"JUTE\",\r",
+									"\t\"KENAF\",\r",
+									"\t\"BAMBOO\",\r",
+									"\t\"SILK\",\r",
+									"\t\"WOOL\",\r",
+									"\t\"ELASTANE\",\r",
+									"\t\"YARN\",\r",
+									"\t\"RAW_FABRIC\",\r",
+									"\t\"DYED_FABRIC\",\r",
+									"\t\"RAW_KNITTED_FABRIC\",\r",
+									"\t\"DYED_KNITTED_FABRIC\",\r",
+									"\t\"GARMENT\"\r",
+									"];\r",
+									"productionTypes = [\r",
+									"  \"SPINNING\",\r",
+									"  \"WEAVING\",\r",
+									"  \"KNITTING\",\r",
+									"  \"DYEING_FINISHING\",\r",
+									"  \"CONFECTION\",\r",
+									"];\r",
+									"compositionSum = 0;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var productionID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  productionType = req.args[2];\r",
+									"  activityStartDate = req.args[3];\r",
+									"  batchID = req.args[4];\r",
+									"  batchType = req.args[5];\r",
+									"  batchInternalID = req.args[6];\r",
+									"  supplierID = req.args[7];\r",
+									"  inputBatches = new Map(Object.entries(JSON.parse(req.args[8])));\r",
+									"  batchComposition = new Map(Object.entries(JSON.parse(req.args[9])));\r",
+									"  quantity = req.args[10];\r",
+									"  finalScore = req.args[11];\r",
+									"  productionScore = req.args[12];\r",
+									"  ses = req.args[13];\r",
+									"\r",
+									"  // Tests for valid production ID\r",
+									"  pm.test(\"Valid production ID\", function () {\r",
+									"    pm.expect(productionID, \"Empty production ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [p-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `production [${productionID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Valid timestamps\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not parse activity start date:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `activity start date can't be after the activity end date:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid activity type\r",
+									"  pm.test(\r",
+									"    \"Production type is valid (SPINNING, WEAVING, KNITTING, ...)\",\r",
+									"    function () {\r",
+									"      pm.expect(productionType, \"Empty activity type ID\").to.not.be.empty;\r",
+									"      pm.expect(\r",
+									"        productionTypes,\r",
+									"        \"Inserted activity type not defined\"\r",
+									"      ).to.deep.include(productionType);\r",
+									"      pm.expect(pm.response.text(), \"Invalid activity type\").to.not.include(\r",
+									"        `could not validate activity type:`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid scores\r",
+									"  pm.test(\"Valid activity scores\", function () {\r",
+									"    pm.expect(\r",
+									"      parseFloat(productionScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"    pm.expect(\r",
+									"      parseFloat(ses),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid input batches data\r",
+									"  pm.test(\"Input batches are valid\", function () {\r",
+									"    pm.expect(\r",
+									"      inputBatches.size,\r",
+									"      \"Invalid input batches (must have at least 1 batch)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    inputBatches.forEach((value, key) => {\r",
+									"      pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"        `could not read batch from world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"        `batch [${key}] does not exist`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Input batch in transit\").to.not.include(\r",
+									"        `batch [${key}] currently in transit`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        value,\r",
+									"        \"Invalid input batch quantity (must be positive [+0])\"\r",
+									"      ).to.be.above(0);\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid input batch quantity (exceeds batch total quantity\"\r",
+									"      ).to.not.include(\r",
+									"        `input batches' quantities must not exceed the batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"        `failed to put batch to world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error deleting batch\").to.not.include(\r",
+									"        `failed to delete batch to world state:`\r",
+									"      );\r",
+									"    });\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid output batch data\r",
+									"  pm.test(\"Batch data is valid\", function () {\r",
+									"    // Batch ID\r",
+									"    pm.expect(batchID, \"Empty batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"      `could not read batch from world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"      `batch [${batchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(batchInternalID, \"Empty batch internal ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch internal ID\").to.not.include(\r",
+									"      `batch internal ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Supplier ID\r",
+									"    pm.expect(supplierID, \"Empty supplier ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid supplier ID\").to.not.include(\r",
+									"      `supplier ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Batch type\r",
+									"    pm.expect(batchType, \"Empty batch type ID\").to.not.be.empty;\r",
+									"    pm.expect(batchTypes, \"Inserted batch type not defined\").to.deep.include(\r",
+									"      batchType\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch type\").to.not.include(\r",
+									"      `could not validate batch type`\r",
+									"    );\r",
+									"\r",
+									"    // Quantity\r",
+									"    pm.expect(parseFloat(quantity), \"Invalid quantity\").to.be.above(0);\r",
+									"\r",
+									"    // Batch composition\r",
+									"    pm.expect(\r",
+									"      batchComposition.size,\r",
+									"      \"Invalid batch composition (must have at least 1 material)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    batchComposition.forEach((value, key) => {\r",
+									"      compositionSum += value;\r",
+									"      pm.expect(value, \"Invalid quantity (must be positive [+0])\").to.be.above(\r",
+									"        0\r",
+									"      );\r",
+									"    });\r",
+									"    if (compositionSum != 100) {\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch composition\").to.not.include(\r",
+									"        `batch composition percentage sum should be equal to 100`\r",
+									"      );\r",
+									"    }\r",
+									"\r",
+									"    // Final score\r",
+									"    pm.expect(\r",
+									"      parseFloat(finalScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for production and batch creation\r",
+									"  pm.test(\"Batch & Production are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding production\").to.not.include(\r",
+									"      `failed to put production to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added production & batch\").to.include(\r",
+									"      `production activity [${productionID}] & batch [${batchID}] were successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tintex-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"method\": \"{{contract}}:CreateProduction\",\r\n    \"args\": [\r\n\t\t\"p-003\",\r\n\t\t\"PU1\",\r\n\t\t\"DYEING_FINISHING\",\r\n\t\t\"2022-09-16T11:45:26.371Z\",\r\n\t\t\"b-008\",\r\n\t\t\"DYED_FABRIC\",\r\n\t\t\"b-008-iid\",\r\n\t\t\"suppl004\",\r\n\t\t\"{\\\"b-006\\\": 50,\\\"b-007\\\": 5}\",\r\n\t\t\"{\\\"organic_cotton\\\": 67,\\\"polyamide6\\\": 33}\",\r\n\t\t\"50\",\r\n\t\t\"2\",\r\n\t\t\"-5\",\r\n\t\t\"2\"\r\n    ]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tintex-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tintex-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Ship to TMG",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Transport variables\r",
+									"var transportTypes = [\"TERRESTRIAL_SMALL\",\r",
+									"\"TERRESTRIAL_BIG\",\r",
+									"\"MARITIME\",\r",
+									"\"AERIAL\",\r",
+									"\"RAILROADER\"];\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var transportID = req.args[0];\r",
+									"  originProductionUnitInternalID = req.args[1];\r",
+									"  destinationProductionUnitID = req.args[2];\r",
+									"  transportType = req.args[3];\r",
+									"  activityDate = req.args[4];\r",
+									"  inputBatches = new Map(Object.entries(JSON.parse(req.args[5])));\r",
+									"  isReturn = req.args[6];\r",
+									"\r",
+									"  // Tests for valid transport ID\r",
+									"  pm.test(\"Valid transport ID\", function () {\r",
+									"    pm.expect(transportID, \"Empty transport ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [t-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `transport activity [${transportID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Valid timestamps\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not parse activity start date:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `activity start date can't be after the activity end date:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid activity type\r",
+									"  pm.test(\"Transport type is valid (ROAD, MARITIME, AIR, ...)\", function () {\r",
+									"    pm.expect(transportType, \"Empty activity type\").to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      transportTypes,\r",
+									"      \"Inserted activity type not defined\"\r",
+									"    ).to.deep.include(transportType);\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity type\").to.not.include(\r",
+									"      `could not validate activity type:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid transport unit internal ID\r",
+									"  pm.test(\"Production unit IDs are valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      originProductionUnitInternalID,\r",
+									"      \"Empty origin production unit internal ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      destinationProductionUnitID,\r",
+									"      \"Empty destination production unit ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid transport unit internal ID\"\r",
+									"    ).to.not.include(`destination production unit's ID must not be empty`);\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Origin can't be the same as destination\"\r",
+									"    ).to.not.include(\r",
+									"      `must be different from destination production unit ID [${destinationProductionUnitID}]`\r",
+									"    );\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Can only transport self-owned batches\"\r",
+									"    ).to.not.include(\r",
+									"      `can only transport batches that are in current production unit`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid input batches data\r",
+									"  pm.test(\"Input batches are valid\", function () {\r",
+									"    pm.expect(\r",
+									"      inputBatches.size,\r",
+									"      \"Invalid input batches (must have only 1 batch)\"\r",
+									"    ).to.be.eql(1);\r",
+									"    inputBatches.forEach((value, key) => {\r",
+									"      pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"        `could not read batch from world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"        `batch [${key}] does not exist`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Input batch in transit\").to.not.include(\r",
+									"        `batch [${key}] currently in transit`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Must return total quantity if it is a return transport\"\r",
+									"      ).to.not.include(\r",
+									"        `when returning a batch, input batch quantity [${value}] must be equal to batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        value,\r",
+									"        \"Invalid input batch quantity (must be positive [+0])\"\r",
+									"      ).to.be.above(0);\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid input batch quantity (exceeds batch total quantity\"\r",
+									"      ).to.not.include(\r",
+									"        `input batches' quantities must not exceed the batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"        `failed to put batch to world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error deleting batch\").to.not.include(\r",
+									"        `failed to delete batch to world state:`\r",
+									"      );\r",
+									"    });\r",
+									"  });\r",
+									"\r",
+									"  // Tests for transport and batch creation\r",
+									"  pm.test(\"Batch & Transport are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"      `failed to put remaining batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put updated batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding transport\").to.not.include(\r",
+									"      `failed to put transport to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added transport & batch\").to.include(\r",
+									"      `successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tintex-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"method\": \"{{contract}}:CreateTransport\",\r\n    \"args\": [\r\n        \"t-003\",\r\n        \"PU1\",\r\n        \"TMGMSP:PU1\",\r\n        \"TERRESTRIAL_BIG\",\r\n        \"2022-09-23T11:45:26.371Z\",\r\n        \"{\\\"b-008\\\": 50}\",\r\n\t\t\"false\"\r\n    ]\r\n}\r\n\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tintex-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tintex-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TMG",
+			"item": [
+				{
+					"name": "Enroll TMG Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('tmg-bearer', res.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"admin\",\r\n    \"secret\": \"adminpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tmg-port}}/user/enroll",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tmg-port}}",
+							"path": [
+								"user",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register TMG Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmg-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"operator\",\r\n    \"secret\": \"operatorpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tmg-port}}/user/register",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tmg-port}}",
+							"path": [
+								"user",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Enroll TMG Operator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var res = pm.response.json();\r",
+									"pm.environment.set('tmg-bearer', res.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": \"operator\",\r\n    \"secret\": \"operatorpw\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tmg-port}}/user/enroll",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tmg-port}}",
+							"path": [
+								"user",
+								"enroll"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Receive Black Cotton-Poly Fabric",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var receptionID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  activityDate = req.args[2];\r",
+									"  receivedBatchID = req.args[3];\r",
+									"  newBatchID = req.args[4];\r",
+									"  newBatchInternalID = req.args[5];\r",
+									"  isAccepted = req.args[6];\r",
+									"  transportScore = req.args[7];\r",
+									"  ses = req.args[8];\r",
+									"  distance = req.args[9];\r",
+									"\r",
+									"  // Tests for valid reception ID\r",
+									"  pm.test(\"Valid reception ID\", function () {\r",
+									"    pm.expect(receptionID, \"Empty reception ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [rc-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `reception [${receptionID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Got timestamp\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid production unit ID\").to.not.include(\r",
+									"      `must be different from batch's production unit ID`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid received batch data\r",
+									"  pm.test(\"Received batch data is valid\", function () {\r",
+									"    // Received batch ID\r",
+									"    pm.expect(receivedBatchID, \"Empty received batch ID\").to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Error reading received batch\"\r",
+									"    ).to.not.include(`could not read batch from world state:`);\r",
+									"    pm.expect(pm.response.text(), \"Invalid received batch ID\").to.not.include(\r",
+									"      `batch [${receivedBatchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid received batch transit state\"\r",
+									"    ).to.not.include(`batch [${receivedBatchID}] is not in transit`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid new batch data\r",
+									"  pm.test(\"New batch data is valid\", function () {\r",
+									"    // New batch ID\r",
+									"    pm.expect(newBatchID, \"Empty new batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid new batch ID\").to.not.include(\r",
+									"      `batch [${newBatchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid new batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(\r",
+									"      newBatchInternalID,\r",
+									"      \"Empty new batch internal ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid new batch internal ID\"\r",
+									"    ).to.not.include(`batch internal ID must not be empty`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid scores\r",
+									"  pm.test(\"Valid activity scores\", function () {\r",
+									"    pm.expect(\r",
+									"      parseFloat(transportScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"    pm.expect(\r",
+									"      parseFloat(ses),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid distance\r",
+									"  pm.test(\"Valid distance\", function () {\r",
+									"    pm.expect(parseFloat(distance), \"Invalid distance\").to.be.at.least(0);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for reception and batch creation\r",
+									"  pm.test(\"Batch & Reception are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding reception\").to.not.include(\r",
+									"      `failed to put reception to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added reception & batch\").to.include(\r",
+									"      `reception activity [${receptionID}] & batch [${newBatchID}] were successfully added to the ledger. batch [${receivedBatchID}] was deleted successfully`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmg-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"method\": \"{{contract}}:CreateReception\",\r\n\t\"args\": [\r\n\t\t\"rc-003\",\r\n\t\t\"PU1\",\r\n\t\t\"2022-09-25T15:50:14\",\r\n\t\t\"b-008\",\r\n\t\t\"b-009\",\r\n\t\t\"b-009-iid\",\r\n\t\t\"true\",\r\n\t\t\"-7\",\r\n\t\t\"-3\",\r\n\t\t\"150\"\r\n\t]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tmg-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tmg-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Produce Black Cotton-Poly T-Shirts",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Gets request and response bodies\r",
+									"var req = JSON.parse(pm.request.toJSON().body.raw);\r",
+									"res = pm.response.json().message;\r",
+									"\r",
+									"// Aux Production variables\r",
+									"var batchTypes = [\r",
+									"\t\"CONVENTIONAL_COTTON\",\r",
+									"\t\"ORGANIC_COTTON\",\r",
+									"\t\"RECYCLED_COTTON\",\r",
+									"\t\"PES\",\r",
+									"\t\"PES_RPET\",\r",
+									"\t\"POLYPROPYLENE\",\r",
+									"\t\"POLYAMIDE_6\",\r",
+									"\t\"POLYAMIDE_66\",\r",
+									"\t\"PAN\",\r",
+									"\t\"VISCOSE\",\r",
+									"\t\"FLAX\",\r",
+									"\t\"JUTE\",\r",
+									"\t\"KENAF\",\r",
+									"\t\"BAMBOO\",\r",
+									"\t\"SILK\",\r",
+									"\t\"WOOL\",\r",
+									"\t\"ELASTANE\",\r",
+									"\t\"YARN\",\r",
+									"\t\"RAW_FABRIC\",\r",
+									"\t\"DYED_FABRIC\",\r",
+									"\t\"RAW_KNITTED_FABRIC\",\r",
+									"\t\"DYED_KNITTED_FABRIC\",\r",
+									"\t\"GARMENT\"\r",
+									"];\r",
+									"productionTypes = [\r",
+									"  \"SPINNING\",\r",
+									"  \"WEAVING\",\r",
+									"  \"KNITTING\",\r",
+									"  \"DYEING_FINISHING\",\r",
+									"  \"CONFECTION\",\r",
+									"];\r",
+									"compositionSum = 0;\r",
+									"\r",
+									"if (res == \"User with provided token is not enrolled\") {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"} else {\r",
+									"  // Tests if issuer is enrolled\r",
+									"  pm.test(\"User is enrolled\", function () {\r",
+									"    pm.expect(pm.response.code, \"Incorrect request status\").to.not.eql(403);\r",
+									"    pm.expect(pm.response.text(), \"Missing authentication\").to.not.include(\r",
+									"      `User with provided token is not enrolled`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Gets contract & method from request body\r",
+									"  var contract = req.method.split(\":\")[0];\r",
+									"  method = req.method.split(\":\")[1];\r",
+									"\r",
+									"  // Tests for valid request structure\r",
+									"  pm.test(\r",
+									"    \"Request strucuture is valid (args are array of strings, no missing channel/chaincode/method names & valid transient params)\",\r",
+									"    function () {\r",
+									"      pm.expect(pm.response.text(), \"Missing channel name\").to.not.include(\r",
+									"        `Missing channel name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode name\").to.not.include(\r",
+									"        `Missing chaincode name in path`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing contract name\").to.not.include(\r",
+									"        `Contract not found with name ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Missing chaincode method in request body`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Blank function name passed`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Missing chaincode method\").to.not.include(\r",
+									"        `Function ${method} not found in contract ${contract}`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid args type\").to.not.include(\r",
+									"        `Invalid chaincode args. It must be an array of strings`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid transient parameter\"\r",
+									"      ).to.not.include(\r",
+									"        `Invalid transient parameter. It must be an object with string keys and string values`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"  // Aux variables assignment for data comparison\r",
+									"  var productionID = req.args[0];\r",
+									"  productionUnitInternalID = req.args[1];\r",
+									"  productionType = req.args[2];\r",
+									"  activityStartDate = req.args[3];\r",
+									"  batchID = req.args[4];\r",
+									"  batchType = req.args[5];\r",
+									"  batchInternalID = req.args[6];\r",
+									"  supplierID = req.args[7];\r",
+									"  inputBatches = new Map(Object.entries(JSON.parse(req.args[8])));\r",
+									"  batchComposition = new Map(Object.entries(JSON.parse(req.args[9])));\r",
+									"  quantity = req.args[10];\r",
+									"  finalScore = req.args[11];\r",
+									"  productionScore = req.args[12];\r",
+									"  ses = req.args[13];\r",
+									"\r",
+									"  // Tests for valid production ID\r",
+									"  pm.test(\"Valid production ID\", function () {\r",
+									"    pm.expect(productionID, \"Empty production ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `activity ID prefix must match its type (should be [p-...])`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid activity ID\").to.not.include(\r",
+									"      `incorrect activity prefix`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Existing activity ID\").to.not.include(\r",
+									"      `production [${productionID}] already exists`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid timestamp\r",
+									"  pm.test(\"Valid timestamps\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not get transaction timestamp:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `could not parse activity start date:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid timestamp\").to.not.include(\r",
+									"      `activity start date can't be after the activity end date:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid activity type\r",
+									"  pm.test(\r",
+									"    \"Production type is valid (SPINNING, WEAVING, KNITTING, ...)\",\r",
+									"    function () {\r",
+									"      pm.expect(productionType, \"Empty activity type ID\").to.not.be.empty;\r",
+									"      pm.expect(\r",
+									"        productionTypes,\r",
+									"        \"Inserted activity type not defined\"\r",
+									"      ).to.deep.include(productionType);\r",
+									"      pm.expect(pm.response.text(), \"Invalid activity type\").to.not.include(\r",
+									"        `could not validate activity type:`\r",
+									"      );\r",
+									"    }\r",
+									"  );\r",
+									"\r",
+									"  // Tests for valid production unit internal ID\r",
+									"  pm.test(\"Production unit internal ID is valid (not empty)\", function () {\r",
+									"    pm.expect(\r",
+									"      productionUnitInternalID,\r",
+									"      \"Empty production unit intenral ID\"\r",
+									"    ).to.not.be.empty;\r",
+									"    pm.expect(\r",
+									"      pm.response.text(),\r",
+									"      \"Invalid production unit internal ID\"\r",
+									"    ).to.not.include(`production unit internal ID must not be empty:`);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid company MSP ID\r",
+									"  pm.test(\"Got MSP ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid MSP ID\").to.not.include(\r",
+									"      `could not get MSP ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid issuer's ID\r",
+									"  pm.test(\"Got issuer's ID\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Invalid issuer ID\").to.not.include(\r",
+									"      `could not get issuer's client ID:`\r",
+									"    );\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid scores\r",
+									"  pm.test(\"Valid activity scores\", function () {\r",
+									"    pm.expect(\r",
+									"      parseFloat(productionScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"    pm.expect(\r",
+									"      parseFloat(ses),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid input batches data\r",
+									"  pm.test(\"Input batches are valid\", function () {\r",
+									"    pm.expect(\r",
+									"      inputBatches.size,\r",
+									"      \"Invalid input batches (must have at least 1 batch)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    inputBatches.forEach((value, key) => {\r",
+									"      pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"        `could not read batch from world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"        `batch [${key}] does not exist`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Input batch in transit\").to.not.include(\r",
+									"        `batch [${key}] currently in transit`\r",
+									"      );\r",
+									"      pm.expect(\r",
+									"        value,\r",
+									"        \"Invalid input batch quantity (must be positive [+0])\"\r",
+									"      ).to.be.above(0);\r",
+									"      pm.expect(\r",
+									"        pm.response.text(),\r",
+									"        \"Invalid input batch quantity (exceeds batch total quantity\"\r",
+									"      ).to.not.include(\r",
+									"        `input batches' quantities must not exceed the batch's total quantity`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error updating batch\").to.not.include(\r",
+									"        `failed to put batch to world state:`\r",
+									"      );\r",
+									"      pm.expect(pm.response.text(), \"Error deleting batch\").to.not.include(\r",
+									"        `failed to delete batch to world state:`\r",
+									"      );\r",
+									"    });\r",
+									"  });\r",
+									"\r",
+									"  // Tests for valid output batch data\r",
+									"  pm.test(\"Batch data is valid\", function () {\r",
+									"    // Batch ID\r",
+									"    pm.expect(batchID, \"Empty batch ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Error reading batch\").to.not.include(\r",
+									"      `could not read batch from world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID\").to.not.include(\r",
+									"      `batch [${batchID}] already exists`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch ID prefix\").to.not.include(\r",
+									"      `incorrect batch prefix. (should be [b-...])`\r",
+									"    );\r",
+									"\r",
+									"    // Batch internal ID\r",
+									"    pm.expect(batchInternalID, \"Empty batch internal ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch internal ID\").to.not.include(\r",
+									"      `batch internal ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Supplier ID\r",
+									"    pm.expect(supplierID, \"Empty supplier ID\").to.not.be.empty;\r",
+									"    pm.expect(pm.response.text(), \"Invalid supplier ID\").to.not.include(\r",
+									"      `supplier ID must not be empty`\r",
+									"    );\r",
+									"\r",
+									"    // Batch type\r",
+									"    pm.expect(batchType, \"Empty batch type ID\").to.not.be.empty;\r",
+									"    pm.expect(batchTypes, \"Inserted batch type not defined\").to.deep.include(\r",
+									"      batchType\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Invalid batch type\").to.not.include(\r",
+									"      `could not validate batch type`\r",
+									"    );\r",
+									"\r",
+									"    // Quantity\r",
+									"    pm.expect(parseFloat(quantity), \"Invalid quantity\").to.be.above(0);\r",
+									"\r",
+									"    // Batch composition\r",
+									"    pm.expect(\r",
+									"      batchComposition.size,\r",
+									"      \"Invalid batch composition (must have at least 1 material)\"\r",
+									"    ).to.be.at.least(1);\r",
+									"    batchComposition.forEach((value, key) => {\r",
+									"      compositionSum += value;\r",
+									"      pm.expect(value, \"Invalid quantity (must be positive [+0])\").to.be.above(\r",
+									"        0\r",
+									"      );\r",
+									"    });\r",
+									"    if (compositionSum != 100) {\r",
+									"      pm.expect(pm.response.text(), \"Invalid batch composition\").to.not.include(\r",
+									"        `batch composition percentage sum should be equal to 100`\r",
+									"      );\r",
+									"    }\r",
+									"\r",
+									"    // Final score\r",
+									"    pm.expect(\r",
+									"      parseFloat(finalScore),\r",
+									"      \"Score out of bounds (should be between -10 & 10)\"\r",
+									"    ).to.be.within(-10, 10);\r",
+									"  });\r",
+									"\r",
+									"  // Tests for production and batch creation\r",
+									"  pm.test(\"Batch & Production are added to state\", function () {\r",
+									"    pm.expect(pm.response.text(), \"Error adding batch\").to.not.include(\r",
+									"      `failed to put batch to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Error adding production\").to.not.include(\r",
+									"      `failed to put production to world state:`\r",
+									"    );\r",
+									"    pm.expect(pm.response.text(), \"Added production & batch\").to.include(\r",
+									"      `production activity [${productionID}] & batch [${batchID}] were successfully added to the ledger`\r",
+									"    );\r",
+									"  });\r",
+									"}\r",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{tmg-bearer}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"method\": \"{{contract}}:CreateProduction\",\r\n    \"args\": [\r\n\t\t\"p-004\",\r\n\t\t\"PU1\",\r\n\t\t\"CONFECTION\",\r\n\t\t\"2022-09-26T11:45:26.371Z\",\r\n\t\t\"b-010\",\r\n\t\t\"GARMENT\",\r\n\t\t\"b-010-iid\",\r\n\t\t\"suppl006\",\r\n\t\t\"{\\\"b-009\\\": 50}\",\r\n\t\t\"{\\\"organic_cotton\\\": 67,\\\"polyamide6\\\": 33}\",\r\n\t\t\"50\",\r\n\t\t\"2\",\r\n\t\t\"-5\",\r\n\t\t\"10\"\r\n    ]\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{host}}:{{tmg-port}}/invoke/{{channel}}/{{chaincode}}",
+							"protocol": "http",
+							"host": [
+								"{{host}}"
+							],
+							"port": "{{tmg-port}}",
+							"path": [
+								"invoke",
+								"{{channel}}",
+								"{{chaincode}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "TraceBatchByInternalID",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{tmg-bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"method\": \"{{contract}}:TraceBatchByInternalID\",\r\n    \"args\": [\"b-002-iid\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{tmg-port}}/query/{{channel}}/{{chaincode}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{tmg-port}}",
+					"path": [
+						"query",
+						"{{channel}}",
+						"{{chaincode}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ReadBatch",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{inovafil-bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"method\": \"{{contract}}:ReadBatch\",\r\n    \"args\": [\"b-003\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{inovafil-port}}/query/{{channel}}/{{chaincode}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{inovafil-port}}",
+					"path": [
+						"query",
+						"{{channel}}",
+						"{{chaincode}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAvailableBatches",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{inovafil-bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"method\": \"{{contract}}:GetAvailableBatches\",\r\n    \"args\": []\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{inovafil-port}}/query/{{channel}}/{{chaincode}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{inovafil-port}}",
+					"path": [
+						"query",
+						"{{channel}}",
+						"{{chaincode}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ReadRegistration",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{inovafil-bearer}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"method\": \"{{contract}}:ReadRegistration\",\r\n    \"args\": [\"rg-001\"]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{host}}:{{inovafil-port}}/query/{{channel}}/{{chaincode}}",
+					"protocol": "http",
+					"host": [
+						"{{host}}"
+					],
+					"port": "{{inovafil-port}}",
+					"path": [
+						"query",
+						"{{channel}}",
+						"{{chaincode}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

@@ -1,0 +1,530 @@
+{
+	"id": "06984974-7bbc-4a10-bc99-86c796760714",
+	"name": "fablo-rest_test",
+	"timestamp": "2023-01-14T07:22:32.780Z",
+	"collection_id": "14379153-0e3b2069-0c84-4ebc-97d1-40433f652a36",
+	"folder_id": 0,
+	"environment_id": "14379153-408d8e57-19f2-4bba-9a3a-5d0c389e31ef",
+	"totalPass": 40,
+	"totalFail": 6,
+	"results": [
+		{
+			"id": "4a082db1-f5ff-4690-9430-eb52ae43b361",
+			"name": "Enroll INOVAFIL Admin",
+			"url": "http://20.224.242.57:8800/user/enroll",
+			"time": 548,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				548
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "4e1c0479-579f-4aa0-8b75-d7179539d4f7",
+			"name": "Register INOVAFIL Operator",
+			"url": "http://localhost:8800/user/register",
+			"time": 131,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				131
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "34290bd2-c178-420a-812f-d912c8230ea3",
+			"name": "Enroll INOVAFIL Operator",
+			"url": "http://localhost:8800/user/enroll",
+			"time": 252,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				252
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "8a9da96b-0026-42bc-baa0-16efc526469e",
+			"name": "Register Cotton",
+			"url": "http://localhost:8800/invoke/stvgd-channel/stvgd-chaincode",
+			"time": 30535,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"User is enrolled ": true,
+				"Valid registration ID prefix (rg-...)": false,
+				"Registration ID is unique (does not exist)": true,
+				"Got timestamp": true,
+				"Batch type is valid (FIBER, YARN, MESH, ...)": true,
+				"Batch unit is valid (KG, L, M, ...)": true,
+				"Production unit internal ID is valid (not empty)": true,
+				"Got MSP ID": true,
+				"Got issuer's ID": true,
+				"Batch data is valid": true,
+				"Batch & Registration are added to state": false
+			},
+			"testPassFailCounts": {
+				"User is enrolled ": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Valid registration ID prefix (rg-...)": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Registration ID is unique (does not exist)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got timestamp": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch type is valid (FIBER, YARN, MESH, ...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch unit is valid (KG, L, M, ...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Production unit internal ID is valid (not empty)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got MSP ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got issuer's ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch data is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch & Registration are added to state": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				30535
+			],
+			"allTests": [
+				{
+					"User is enrolled ": true,
+					"Valid registration ID prefix (rg-...)": false,
+					"Registration ID is unique (does not exist)": true,
+					"Got timestamp": true,
+					"Batch type is valid (FIBER, YARN, MESH, ...)": true,
+					"Batch unit is valid (KG, L, M, ...)": true,
+					"Production unit internal ID is valid (not empty)": true,
+					"Got MSP ID": true,
+					"Got issuer's ID": true,
+					"Batch data is valid": true,
+					"Batch & Registration are added to state": false
+				}
+			]
+		},
+		{
+			"id": "eb0ec294-916d-44dd-a11b-4d6ecf63c40f",
+			"name": "Register Polyester",
+			"url": "http://localhost:8800/invoke/stvgd-channel/stvgd-chaincode",
+			"time": 2768,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {
+				"User is enrolled ": true,
+				"Valid registration ID prefix (rg-...)": true,
+				"Registration ID is unique (does not exist)": true,
+				"Got timestamp": true,
+				"Batch type is valid (FIBER, YARN, MESH, ...)": true,
+				"Batch unit is valid (KG, L, M, ...)": true,
+				"Production unit internal ID is valid (not empty)": true,
+				"Got MSP ID": true,
+				"Got issuer's ID": true,
+				"Batch data is valid": true,
+				"Batch & Registration are added to state": true
+			},
+			"testPassFailCounts": {
+				"User is enrolled ": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Valid registration ID prefix (rg-...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Registration ID is unique (does not exist)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got timestamp": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch type is valid (FIBER, YARN, MESH, ...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch unit is valid (KG, L, M, ...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Production unit internal ID is valid (not empty)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got MSP ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got issuer's ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch data is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch & Registration are added to state": {
+					"pass": 1,
+					"fail": 0
+				}
+			},
+			"times": [
+				2768
+			],
+			"allTests": [
+				{
+					"User is enrolled ": true,
+					"Valid registration ID prefix (rg-...)": true,
+					"Registration ID is unique (does not exist)": true,
+					"Got timestamp": true,
+					"Batch type is valid (FIBER, YARN, MESH, ...)": true,
+					"Batch unit is valid (KG, L, M, ...)": true,
+					"Production unit internal ID is valid (not empty)": true,
+					"Got MSP ID": true,
+					"Got issuer's ID": true,
+					"Batch data is valid": true,
+					"Batch & Registration are added to state": true
+				}
+			]
+		},
+		{
+			"id": "e61b3e10-5268-43da-95d3-25cfa22e8bd7",
+			"name": "Produce Cotton-Poly Yarn",
+			"url": "http://localhost:8800/invoke/stvgd-channel/stvgd-chaincode",
+			"time": 60,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"User is enrolled ": true,
+				"Valid production ID prefix (p-...)": true,
+				"Production ID is unique (does not exist)": true,
+				"Timestamps are valid": true,
+				"Production type is valid (SPINNING, WEAVING, KNITTING, ...)": true,
+				"Batch type is valid (FIBER, YARN, MESH, ...)": true,
+				"Scores are valid (-10 <= score <= 10)": true,
+				"Batch unit is valid (KG, L, M, ...)": true,
+				"Input batches are valid": true,
+				"Output batch is valid": true,
+				"Production unit internal ID is valid (not empty)": false,
+				"Got MSP ID": true,
+				"Got issuer's ID": true,
+				"Batch & Production are added to state": false
+			},
+			"testPassFailCounts": {
+				"User is enrolled ": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Valid production ID prefix (p-...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Production ID is unique (does not exist)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Timestamps are valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Production type is valid (SPINNING, WEAVING, KNITTING, ...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch type is valid (FIBER, YARN, MESH, ...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Scores are valid (-10 <= score <= 10)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch unit is valid (KG, L, M, ...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Input batches are valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Output batch is valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Production unit internal ID is valid (not empty)": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Got MSP ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got issuer's ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch & Production are added to state": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				60
+			],
+			"allTests": [
+				{
+					"User is enrolled ": true,
+					"Valid production ID prefix (p-...)": true,
+					"Production ID is unique (does not exist)": true,
+					"Timestamps are valid": true,
+					"Production type is valid (SPINNING, WEAVING, KNITTING, ...)": true,
+					"Batch type is valid (FIBER, YARN, MESH, ...)": true,
+					"Scores are valid (-10 <= score <= 10)": true,
+					"Batch unit is valid (KG, L, M, ...)": true,
+					"Input batches are valid": true,
+					"Output batch is valid": true,
+					"Production unit internal ID is valid (not empty)": false,
+					"Got MSP ID": true,
+					"Got issuer's ID": true,
+					"Batch & Production are added to state": false
+				}
+			]
+		},
+		{
+			"id": "4fc14620-3bd2-468b-bfa3-68c1aa318e72",
+			"name": "Ship to A.SAMPAIO",
+			"url": "http://localhost:8800/invoke/stvgd-channel/stvgd-chaincode",
+			"time": 38,
+			"responseCode": {
+				"code": 400,
+				"name": "Bad Request"
+			},
+			"tests": {
+				"User is enrolled ": true,
+				"Valid transport ID prefix (t-...)": true,
+				"Transport ID is unique (does not exist)": true,
+				"Timestamps are valid": true,
+				"Got MSP ID": true,
+				"Got issuer's ID": true,
+				"Production unit internal ID is valid (not empty)": true,
+				"Transport type is valid (ROAD, MARITIME, AIR, ...)": false,
+				"Input batches are valid": true,
+				"Batch & Transport are added to state": false
+			},
+			"testPassFailCounts": {
+				"User is enrolled ": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Valid transport ID prefix (t-...)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Transport ID is unique (does not exist)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Timestamps are valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got MSP ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Got issuer's ID": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Production unit internal ID is valid (not empty)": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Transport type is valid (ROAD, MARITIME, AIR, ...)": {
+					"pass": 0,
+					"fail": 1
+				},
+				"Input batches are valid": {
+					"pass": 1,
+					"fail": 0
+				},
+				"Batch & Transport are added to state": {
+					"pass": 0,
+					"fail": 1
+				}
+			},
+			"times": [
+				38
+			],
+			"allTests": [
+				{
+					"User is enrolled ": true,
+					"Valid transport ID prefix (t-...)": true,
+					"Transport ID is unique (does not exist)": true,
+					"Timestamps are valid": true,
+					"Got MSP ID": true,
+					"Got issuer's ID": true,
+					"Production unit internal ID is valid (not empty)": true,
+					"Transport type is valid (ROAD, MARITIME, AIR, ...)": false,
+					"Input batches are valid": true,
+					"Batch & Transport are added to state": false
+				}
+			]
+		},
+		{
+			"id": "186a7c3d-dd17-4420-a242-ec11a622e9a9",
+			"name": "Enroll A.SAMPAIO Admin",
+			"url": "http://localhost:8801/user/enroll",
+			"time": 713,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				713
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "3ee8e10e-d81b-40bb-857b-ed365f527ad0",
+			"name": "Register A.SAMPAIO Operator",
+			"url": "http://localhost:8801/user/register",
+			"time": 124,
+			"responseCode": {
+				"code": 201,
+				"name": "Created"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				124
+			],
+			"allTests": [
+				{}
+			]
+		},
+		{
+			"id": "a26d534f-969e-47de-86a9-20ba7ea32225",
+			"name": "Enroll A.SAMPAIO Operator",
+			"url": "http://localhost:8801/user/enroll",
+			"time": 694,
+			"responseCode": {
+				"code": 200,
+				"name": "OK"
+			},
+			"tests": {},
+			"testPassFailCounts": {},
+			"times": [
+				694
+			],
+			"allTests": [
+				{}
+			]
+		}
+	],
+	"count": 1,
+	"totalTime": 35863,
+	"collection": {
+		"requests": [
+			{
+				"id": "4a082db1-f5ff-4690-9430-eb52ae43b361",
+				"method": "POST"
+			},
+			{
+				"id": "4e1c0479-579f-4aa0-8b75-d7179539d4f7",
+				"method": "POST"
+			},
+			{
+				"id": "34290bd2-c178-420a-812f-d912c8230ea3",
+				"method": "POST"
+			},
+			{
+				"id": "8a9da96b-0026-42bc-baa0-16efc526469e",
+				"method": "POST"
+			},
+			{
+				"id": "eb0ec294-916d-44dd-a11b-4d6ecf63c40f",
+				"method": "POST"
+			},
+			{
+				"id": "e61b3e10-5268-43da-95d3-25cfa22e8bd7",
+				"method": "POST"
+			},
+			{
+				"id": "4fc14620-3bd2-468b-bfa3-68c1aa318e72",
+				"method": "POST"
+			},
+			{
+				"id": "186a7c3d-dd17-4420-a242-ec11a622e9a9",
+				"method": "POST"
+			},
+			{
+				"id": "3ee8e10e-d81b-40bb-857b-ed365f527ad0",
+				"method": "POST"
+			},
+			{
+				"id": "a26d534f-969e-47de-86a9-20ba7ea32225",
+				"method": "POST"
+			},
+			{
+				"id": "50b97651-aaef-4311-aae3-8b4b58b9843d",
+				"method": "POST"
+			}
+		]
+	}
+}
